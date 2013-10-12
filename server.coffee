@@ -15,6 +15,7 @@ socket = null
 timeline = null
 clockTimerID = null
 startTime = null
+users = {}
 
 server = express()
 http_server = http.createServer server
@@ -75,13 +76,18 @@ onPoint = (point) ->
         when "quiz:end"
             clearInterval(clockTimerID)
             console.log "The end"
-        when "score:update"
-            point.score = 0
 
     console.log "point " + point.time, point
-
     point.passed = true
-    io.sockets.emit "point", point
+
+    if point.type is "score:update"
+        for userdata, username of users
+            point.score = userdata.score
+            
+            for type, socket_id of userdata.clients
+                io.sockets[socket_id].emit point
+    else
+        io.sockets.emit "point", point
 
 
 createTimeline = ->
@@ -139,6 +145,15 @@ createTimeline = ->
 io.sockets.on 'connection', (socket) =>
     console.log 'hallo'
     
+    socket.on 'register', (data) =>
+        console.log 'register', data
+        
+        if not users[data.username]
+            users[data.username] = {clients:{}}
+
+        users[data.username].clients[data.type] = socket.id
+        
+        console.log "users: %j", users
 
 
 console.log "http server running on port " + config.server_port
