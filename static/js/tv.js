@@ -3,7 +3,12 @@ var TV = (function(){
   function onTvStart(data){
     console.log('Tv start');
     //
-
+    try{
+      var v = document.getElementById("tvscreen");
+      v.play();
+    }catch(err){
+      console.log("Damned: " + err);
+    }
   }
 
   function onQuizStart(data){
@@ -45,6 +50,16 @@ var TV = (function(){
     console.log('Connect to: ' + url);
     baseUrl = url;
     socket = io.connect(baseUrl);
+
+    var registration_options = { 
+      username: 'one',
+      type: 'tv'
+    }
+
+    socket.on('connect', function (data) {
+      console.log('connect', data);
+      socket.emit('register', registration_options);
+    });
 
     socket.on('point', function(data){
       //console.log('Point received: ' + JSON.stringify(data));

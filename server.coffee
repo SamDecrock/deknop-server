@@ -1,6 +1,6 @@
 ###
 Maarten: hey bert, wazzup?
-Bert: ...
+Bert: dek nop
 ###
 config = require('./config.js').config
 express = require 'express'
@@ -8,10 +8,11 @@ http = require 'http'
 fs = require 'fs'
 path = require 'path'
 eco = require 'eco'
+_ = require 'underscore'
 log4js = require('log4js')
 log4js.replaceConsole()
 
-socket = null
+program_info = JSON.parse fs.readFileSync path.join(__dirname + "/static/program_info.json"), "utf-8"
 timeline = null
 clockTimerID = null
 startTime = null
@@ -54,6 +55,43 @@ server.post '/api/start', (req, res) ->
     res.send {'status': 'started'}
 
 
+server.post '/api/answer', (req, res) ->
+    username = req.body.username
+    id = req.body.id
+    answer = req.body.answer
+
+    questions = program_info.questions
+    question = _.find questions, (q) -> q.id is id
+    user = users[username]
+
+    unless user
+        return res.send {'error': 'cannot find user #{username}'}
+
+    unless question
+        return res.send {'error': 'cannot find question #{id}'}
+
+    unless _.isUndefined user.answered[id] 
+        return res.send {'error': '#{username} already answered question #{id}'}
+
+    
+    correct = question.right_answer is answer
+    console.log "#{username} answered #{answer} for question id:#{id}"
+
+    user.answered[id] = correct
+
+    if correct
+        user.score += 1
+
+    res.send {
+        'status': 'answered'
+    }
+
+        
+
+
+    
+
+
 startTimeline = ->
     clearInterval(clockTimerID)
     clockTimerID = setInterval clockTick, 40 # 25 frames/s
@@ -81,20 +119,19 @@ onPoint = (point) ->
     point.passed = true
 
     if point.type is "score:update"
-        for userdata, username of users
+        for username, userdata of users
             point.score = userdata.score
-            
+
             for type, socket_id of userdata.clients
-                io.sockets[socket_id].emit point
+                io.sockets.sockets[socket_id].emit "point", point
     else
         io.sockets.emit "point", point
 
 
-createTimeline = ->
-    program_info = JSON.parse fs.readFileSync path.join(__dirname + "/static/program_info.json"), "utf-8"
-    timeline = []
 
-    console.log "createTimeline"
+
+createTimeline = ->
+    timeline = []
 
     timeline.push {
         type: "tv:start"
@@ -118,6 +155,7 @@ createTimeline = ->
         timeline.push {
             type: "question:soon"
             time: Math.max 0, question.start - 2
+            countdown: 2
             buttons: []
         }
 
@@ -139,17 +177,16 @@ createTimeline = ->
             time: question.result
         }
 
-    console.log timeline
-
-
 io.sockets.on 'connection', (socket) =>
-    console.log 'hallo'
-    
     socket.on 'register', (data) =>
         console.log 'register', data
         
         if not users[data.username]
-            users[data.username] = {clients:{}}
+            users[data.username] = {
+                clients:{}
+                score: 0
+                answered: {}
+            }
 
         users[data.username].clients[data.type] = socket.id
         
