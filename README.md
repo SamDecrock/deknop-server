@@ -18,3 +18,7 @@ Compile coffeescripts: (with -b option!)
 Run server:
 
     node server.js
+
+Node, socket.io and http:
+
+	https://github.com/visionmedia/express/wiki/Migrating-from-2.x-to-3.x
