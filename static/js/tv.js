@@ -3,7 +3,12 @@ var TV = (function(){
   function onTvStart(data){
     console.log('Tv start');
     //
-
+    try{
+      var v = document.getElementById("tvscreen");
+      v.play();
+    }catch(err){
+      console.log("Damned: " + err);
+    }
   }
 
   function onQuizStart(data){
