@@ -14,13 +14,51 @@
 
     <!-- CSS Styles -->   
     <link rel="stylesheet" href="/static/css/core.css" media="screen" />
+    <style>
+        .clearfix:after {
+            content: ".";
+            display: block;
+            clear: both;
+            visibility: hidden;
+            line-height: 0;
+            height: 0;
+        }
+         
+        .clearfix {
+            display: inline-block;
+        }
+         
+        html[xmlns] .clearfix {
+            display: block;
+        }
+         
+        * html .clearfix {
+            height: 1%;
+        }
+        ul{list-style-type: none;margin-bottom: 25px;}
+        li{float:left;margin-right: 15px}
+    </style>
 </head>
 <body>
-    <h1>Demo</h1>
-    <ul>
+    <ul class="clearfix">
         <li><a href="/api/start" id="start">Start video</li>
         <li><a href="/api/">Buh</li>
     </ul>
+
+    <video src="/static/video/1210100612525569021.mp4" id="tvscreen" controls>
+        Your browser does not support the video tag.
+    </video>
+
+    <!--
+    1210100612525569021.mp4
+    <video height="270" src="/static/bunny.mp4" width="480"></video>
+
+    <video width="320" height="240" controls>
+      <source src="movie.mp4" type="video/mp4">
+      <source src="movie.ogg" type="video/ogg">
+
+    </video>
+    -->
 
 	<script src="/static/js/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
