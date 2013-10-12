@@ -13,6 +13,6 @@
             "end": 8.0,
             "buttons": ["A","B"],
             "right_answer": "B"
-        },
+        }
     ] 
 }

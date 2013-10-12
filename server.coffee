@@ -8,6 +8,7 @@ log4js = require('log4js')
 log4js.replaceConsole()
 
 socket = null
+timeline = null
 
 io.enable 'browser client minification'         # send minified client
 io.enable 'browser client etag'                 # apply etag caching logic based on version number
@@ -32,80 +33,42 @@ server.get '/', (req, res) ->
     res.send eco.render template, context
 
 
-getStatus = (author=null)->
-    previousStatus = status
+createTimeline = ->
+    program_info = JSON.parse fs.readFileSync path.join(__dirname + "/static/program_info.json"), "utf-8"
+    timeline = []
 
-    count = hungryCount()
-    status = 'waiting'
-    countdown = countdownValue
+    console.log "createTimeline"
 
-    if count >= config.leaveat
-        status = 'leaving'
+    for question in program_info.questions
+        soon_point = {
+            type: "question:soon"
+            time: Math.max 0, question.start - 2
+            buttons: []
+            passed:false
+        }
 
-        unless countdownStart?
-            countdownStart = new Date()
-            clearInterval countdownIntervalID
+        start_point = {
+            type: "question:start"
+            time: question.start
+            buttons: question.buttons
+            passed: false
+            countdown: question.end - question.start
+        }
 
-            countdownIntervalID = setInterval onCountdownUpdate, 1000
+        end_point = {
+            type: "question:end"
+            time: question.end
+            buttons: []
+            passed:false
+        }
 
-        if countdown <= 0
-            status = 'departed'
+        timeline.push soon_point
+        timeline.push start_point
+        timeline.push end_point
 
-            unless previousStatus is 'departed'
-                console.log "START RESET TIMER -> call reset in " + config.resetAllDelay + "s"
-                clearTimeout resetTimeoutID
-                resetTimeoutID = setTimeout reset, config.resetAllDelay*1000
+    console.log timeline
 
-    current =
-        status: status
-        count: count
-        countdown: countdown
-
-    if author
-        current.author = author
-        current.hungry = isHungry(author)
-
-    # state changes are caught here
-    unless previousStatus is status
-        console.log "status: ", previousStatus, '->', status
-
-        if status is 'leaving' and previousStatus is 'waiting'
-            hipchat.leaving()
-
-        if status is 'departed' and previousStatus is 'leaving'
-            hipchat.departed()
-
-    return current
-
-update = ->
-    statusObject = getStatus()
-    console.log "update", statusObject
-
-    io.sockets.emit 'update', statusObject
-
-reset = ->
-    console.log "RESET"
-    users = {}
-    socket = null
-    clearTimeout resetTimeoutID
-    clearInterval countdownIntervalID
-    countdownStart = null
-    countdownIntervalID = null
-    countdownValue = config.countdown
-
-    update()
-
-onCountdownUpdate = ->
-    diff = +new Date() - countdownStart.getTime()
-    countdown = config.countdown - Math.round(diff/1000)
-
-    countdownValue = countdown
-
-    if countdown <= 0
-        clearInterval countdownIntervalID
-        console.log "finished!"
-
-    update()
+createTimeline()
 
 console.log "http server running on port " + config.server_port
 console.log "sockets server running on port " + config.sockets_port
