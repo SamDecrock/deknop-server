@@ -1,9 +1,13 @@
+###
+Maarten: hey bert, wazzup?
+Bert: ...
+###
 config = require('./config.js').config
 express = require 'express'
+http = require 'http'
 fs = require 'fs'
 path = require 'path'
 eco = require 'eco'
-io = require('socket.io').listen config.sockets_port
 log4js = require('log4js')
 log4js.replaceConsole()
 
@@ -12,13 +16,15 @@ timeline = null
 clockTimerID = null
 startTime = null
 
+server = express()
+http_server = http.createServer server
+io = require('socket.io').listen http_server
+
 io.enable 'browser client minification'         # send minified client
 io.enable 'browser client etag'                 # apply etag caching logic based on version number
 io.enable 'browser client gzip'                 # gzip the file
 io.set 'log level', config.log_level
 io.set 'transports', config.transports
-
-server = express()
 
 server.configure ->
     server.use '/static', express.static path.join(__dirname, '/static')
@@ -31,6 +37,11 @@ server.configure ->
 
 server.get '/', (req, res) ->
     template = fs.readFileSync path.join(__dirname + "/index.eco.html"), "utf-8"
+    context = {}
+    res.send eco.render template, context
+
+server.get '/demo', (req, res) ->
+    template = fs.readFileSync path.join(__dirname + "/demo.eco.html"), "utf-8"
     context = {}
     res.send eco.render template, context
 
@@ -101,6 +112,19 @@ createTimeline = ->
 createTimeline()
 startTimeline()
 
+
+io.sockets.on 'connection', (socket) =>
+    console.log 'hallo'
+
+###
+io.sockets.on('connection', function(socket) {
+
+    function log(eventStr) {
+        console.log("Event: " + eventStr + " from " + users[socket.id] + " (" + socket.id + ")")
+    }
+    log("connection");
+###
+
+
 console.log "http server running on port " + config.server_port
-console.log "sockets server running on port " + config.sockets_port
-server.listen config.server_port
+http_server.listen config.server_port
