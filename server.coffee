@@ -57,7 +57,7 @@ server.post '/api/start', (req, res) ->
 
 server.post '/api/answer', (req, res) ->
     username = req.body.username
-    id = req.body.id
+    id = parseInt(req.body.id)
     answer = req.body.answer
 
     questions = program_info.questions
@@ -73,22 +73,14 @@ server.post '/api/answer', (req, res) ->
     unless _.isUndefined user.answered[id] 
         return res.send {'error': '#{username} already answered question #{id}'}
 
-    
     correct = question.right_answer is answer
-    console.log "#{username} answered #{answer} for question id:#{id}"
-
     user.answered[id] = correct
 
-    if correct
-        user.score += 1
+    console.log "#{username} answered #{answer} for question id:#{id}"
 
     res.send {
         'status': 'answered'
     }
-
-        
-
-
     
 
 
@@ -119,11 +111,15 @@ onPoint = (point) ->
     point.passed = true
 
     if point.type is "score:update"
-        for username, userdata of users
-            point.score = userdata.score
-            point.correct = users[username].answered[point.id]
+        for username, user of users
+            user = users[username]
 
-            for type, socket_id of userdata.clients
+            point.correct = user.answered[point.id]
+
+            if point.correct then user.score += 1
+            point.score = user.score
+            
+            for type, socket_id of user.clients
                 io.sockets.sockets[socket_id].emit "point", point
     else
         io.sockets.emit "point", point

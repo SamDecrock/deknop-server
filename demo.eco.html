@@ -41,9 +41,33 @@
 </head>
 <body>
     <ul class="clearfix">
-        <li><a href="/api/start" id="start">Start video</li>
-        <li><a href="/api/">Buh</li>
+        <li><a href="/api/start" id="start">Start video</a></li>
     </ul>
+
+    <form action="/api/answer" method="POST">
+        <h3>Question 1</h3>
+        <input type="hidden" name="id" value="0">
+        <input type="hidden" name="username" value="one">
+        <input type="radio" name="answer" value="A"> A<br>
+        <input type="radio" name="answer" value="B"> B<br>
+        <input type="radio" name="answer" value="C"> C<br>
+        <input type="radio" name="answer" value="D"> D<br>
+        <input type="submit">
+    </form>
+
+    <form action="/api/answer" method="POST">
+        <h3>Question 2</h3>
+        <input type="hidden" name="id" value="1">
+        <input type="hidden" name="username" value="one">
+        <input type="radio" name="answer" value="A"> A<br>
+        <input type="radio" name="answer" value="B"> B<br>
+        <input type="radio" name="answer" value="C"> C<br>
+        <input type="radio" name="answer" value="D"> D<br>
+        <input type="submit">
+    </form>
+
+    <br>
+    <br>
 
     <video src="/static/video/1210100612525569021.mp4" id="tvscreen" controls>
         Your browser does not support the video tag.
@@ -61,6 +85,7 @@
     -->
 
 	<script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/jquery.form.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/static/js/tv.js"></script>
     <script>
