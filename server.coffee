@@ -47,7 +47,10 @@ server.get '/demo', (req, res) ->
 
 
 server.post '/api/start', (req, res) ->
+    console.log 'Starting the TV show'
+    createTimeline()
     startTimeline()
+    res.send {'status': 'started'}
 
 
 startTimeline = ->
@@ -131,9 +134,6 @@ createTimeline = ->
         }
 
     console.log timeline
-
-createTimeline()
-startTimeline()
 
 
 io.sockets.on 'connection', (socket) =>
