@@ -14,14 +14,53 @@ header.main{
 	}
 }
 
+.pane{
+	width: 200px;
+	height: 200px;
+}
+
 .television{
 	width: 960px;
-	padding: 20px;
-	margin:0 auto;
+	padding: 40px;
+	margin:0 auto 60px auto;
 	border: 2px solid #0d2f4a;
 	@include border-radius(20px);
-}
 	
-video {
-	width: 100%;
+	.screen{
+		width: 100%;
+		position: relative;
+		
+		.question-correct,
+		.question-incorrect,
+		.question-timer{
+			width: 100px;
+			height: 100px;
+			@include border-radius(50%);
+			position: absolute;
+			right: 20px;
+			top: 20px;
+			z-index: 99;
+			//@include box-shadow(0 0 5px rgba(0,0,0,0.5));
+			display: none;
+		}
+		
+		.question-correct{
+			background: #9fd647 url(../img/correct.png) center center no-repeat;
+			background-size: 50px;
+		}
+		
+		.question-incorrect{
+			background: #f85f6a url(../img/incorrect.png) center center no-repeat;
+			background-size: 50px;
+		}
+		
+		.question-timer{
+			background: #67a7d3;
+			display: block;
+		}
+		
+		video {
+			width: 100%;
+		}
+	}
 }
