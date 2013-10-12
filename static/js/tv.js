@@ -1,10 +1,41 @@
 var TV = (function(){
+  
+  var archtype = Raphael("question-timer", 100, 100);
+  
+  archtype.customAttributes.arc = function (xloc, yloc, value, total, R) {
+      var alpha = 360 / total * value,
+          a = (90 - alpha) * Math.PI / 180,
+          x = xloc + R * Math.cos(a),
+          y = yloc - R * Math.sin(a),
+          path;
+      if (total == value) {
+          path = [
+              ["M", xloc, yloc - R],
+              ["A", R, R, 0, 1, 1, xloc - 0.01, yloc - R]
+          ];
+      } else {
+          path = [
+              ["M", xloc, yloc - R],
+              ["A", R, R, 0, +(alpha > 180), 1, x, y]
+          ];
+      }
+      return {
+          path: path
+      };
+  };
+  
+  //make an arc at 50,50 with a radius of 30 that grows from 0 to 40 of 100 with a bounce
+  var my_arc = archtype.path().attr({
+      "stroke": "#fff",
+      "stroke-width": 14,
+      arc: [50, 50, 100, 100, 30]
+  });
 
   function onTvStart(data){
     console.log('Tv start');
     //
     try{
-      var v = document.getElementById("tvscreen");
+      var v = document.getElementById("video");
       v.play();
     }catch(err){
       console.log("Damned: " + err);
@@ -29,11 +60,40 @@ var TV = (function(){
   function onQuestionStart(data){
     console.log('Question start');
     //{"type":"question:start","time":6,"buttons":["A","B"],"passed":true,"countdown":2}
+    
+    $('.question-timer').addClass('show');
+    
+    var countdownMax = 10,
+      dateNow = +new Date(),
+      futureDate = dateNow + (countdownMax * 1000);
+      
+    window.requestAnimFrame = (function(){
+      return  window.requestAnimationFrame       ||
+              window.webkitRequestAnimationFrame ||
+              window.mozRequestAnimationFrame    ||
+              function( callback ){
+                window.setTimeout(callback, 1000 / 60);
+              };
+    })();
+      
+    (function animloop(){
+        var seconds = 10,
+        currentDate = +new Date,
+        secondsRemain = Math.round((futureDate - currentDate) / 1000),
+        percentage = Math.max(0, (secondsRemain / countdownMax) * 100);
+        
+        my_arc.animate({
+            arc: [50, 50, percentage, 100, 30]
+        }, 100, "bounce");
+        
+        requestAnimFrame(animloop);
+    })();
   }
 
   function onQuestionEnd(data){
     console.log('Question end');
-    //{"type":"question:end","time":8,"buttons":[],"passed":true} 
+    //{"type":"question:end","time":8,"buttons":[],"passed":true}
+    $('.question-timer').removeClass('show');
   }
 
   function onScoreUpdate(data){
