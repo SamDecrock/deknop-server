@@ -35,7 +35,7 @@ server.get '/', (req, res) ->
     res.send eco.render template, context
 
 
-server.post '/start', (req, res) ->
+server.post '/api/start', (req, res) ->
     startTimeline()
 
 
@@ -58,7 +58,8 @@ clockTick = ->
 
 onPoint = (point) ->
     point.passed = true
-    console.log "point " + point.time
+    console.log "point " + point.time, point
+    io.sockets.emit "point", point
 
 
 
