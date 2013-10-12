@@ -5,16 +5,18 @@
     "end": 17.0,
     "questions": [
         {
+            "id": 0,
             "start": 3.5,
             "end": 5.0,
-            "result": 0.12,
+            "result": 12,
             "buttons": ["A","B","C","D"],
             "right_answer": "A"
         },
         {
+            "id": 1,
             "start": 8.0,
             "end": 9.0,
-            "result": 0.15,
+            "result": 15,
             "buttons": ["A","B"],
             "right_answer": "B"
         }
