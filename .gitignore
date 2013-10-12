@@ -2,3 +2,8 @@ node_modules
 .sass-cache/
 config.js
 server.js
+
+.DS_Store
+static/video/video.mp4
+static/.DS_Store
+static/sass/.DS_Store
