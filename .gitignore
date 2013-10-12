@@ -3,4 +3,9 @@ node_modules
 config.js
 server.js
 
+
+.DS_Store
+static/video/video.mp4
 static/video/1210100612525569021.mp4
+static/.DS_Store
+static/sass/.DS_Store

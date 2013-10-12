@@ -8,6 +8,8 @@ images_dir = "img"
 javascripts_dir = "js"
 fonts_dir = "fonts"
 
+preferred_syntax = :scss
+
 output_style = :compressed
 
 relative_assets = true

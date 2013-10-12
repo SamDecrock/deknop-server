@@ -1,0 +1,27 @@
+@import "compass/css3";
+
+body{
+	margin: 0; 
+}
+
+header.main{
+	padding: 40px 0;
+	
+	.inner-content{
+		width: 960px;
+		margin: 0 auto;
+		text-align: center;
+	}
+}
+
+.television{
+	width: 960px;
+	padding: 20px;
+	margin:0 auto;
+	border: 2px solid #0d2f4a;
+	@include border-radius(20px);
+}
+	
+video {
+	width: 100%;
+}
