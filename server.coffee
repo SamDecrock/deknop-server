@@ -15,6 +15,7 @@ socket = null
 timeline = null
 clockTimerID = null
 startTime = null
+users = {}
 
 server = express()
 http_server = http.createServer server
@@ -47,7 +48,10 @@ server.get '/demo', (req, res) ->
 
 
 server.post '/api/start', (req, res) ->
+    console.log 'Starting the TV show'
+    createTimeline()
     startTimeline()
+    res.send {'status': 'started'}
 
 
 startTimeline = ->
@@ -68,10 +72,22 @@ clockTick = ->
             onPoint(point)
 
 onPoint = (point) ->
-    point.passed = true
-    console.log "point " + point.time, point
-    io.sockets.emit "point", point
+    switch point.type
+        when "quiz:end"
+            clearInterval(clockTimerID)
+            console.log "The end"
 
+    console.log "point " + point.time, point
+    point.passed = true
+
+    if point.type is "score:update"
+        for userdata, username of users
+            point.score = userdata.score
+            
+            for type, socket_id of userdata.clients
+                io.sockets[socket_id].emit point
+    else
+        io.sockets.emit "point", point
 
 
 createTimeline = ->
@@ -80,50 +96,64 @@ createTimeline = ->
 
     console.log "createTimeline"
 
+    timeline.push {
+        type: "tv:start"
+        time: 0
+        buttons: []
+    }
+
+    timeline.push {
+        type: "quiz:start"
+        time: program_info.start
+        buttons: []
+    }
+
+    timeline.push {
+        type: "quiz:end"
+        time: program_info.end
+        buttons: []
+    }
+
     for question in program_info.questions
-        soon_point = {
+        timeline.push {
             type: "question:soon"
             time: Math.max 0, question.start - 2
             buttons: []
-            passed:false
         }
 
-        start_point = {
+        timeline.push {
             type: "question:start"
             time: question.start
             buttons: question.buttons
-            passed: false
             countdown: question.end - question.start
         }
 
-        end_point = {
+        timeline.push {
             type: "question:end"
             time: question.end
             buttons: []
-            passed:false
         }
 
-        timeline.push soon_point
-        timeline.push start_point
-        timeline.push end_point
+        timeline.push {
+            type: "score:update"
+            time: question.result
+        }
 
     console.log timeline
-
-createTimeline()
-startTimeline()
 
 
 io.sockets.on 'connection', (socket) =>
     console.log 'hallo'
+    
+    socket.on 'register', (data) =>
+        console.log 'register', data
+        
+        if not users[data.username]
+            users[data.username] = {clients:{}}
 
-###
-io.sockets.on('connection', function(socket) {
-
-    function log(eventStr) {
-        console.log("Event: " + eventStr + " from " + users[socket.id] + " (" + socket.id + ")")
-    }
-    log("connection");
-###
+        users[data.username].clients[data.type] = socket.id
+        
+        console.log "users: %j", users
 
 
 console.log "http server running on port " + config.server_port
