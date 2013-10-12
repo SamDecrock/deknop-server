@@ -84,12 +84,7 @@ onPoint = (point) ->
         for username, userdata of users
             point.score = userdata.score
 
-            console.log username, userdata
-            
             for type, socket_id of userdata.clients
-                console.log type, socket_id
-
-                console.log "send to", socket_id
                 io.sockets.sockets[socket_id].emit "point", point
     else
         io.sockets.emit "point", point
@@ -98,8 +93,6 @@ onPoint = (point) ->
 createTimeline = ->
     program_info = JSON.parse fs.readFileSync path.join(__dirname + "/static/program_info.json"), "utf-8"
     timeline = []
-
-    console.log "createTimeline"
 
     timeline.push {
         type: "tv:start"
@@ -143,9 +136,6 @@ createTimeline = ->
             type: "score:update"
             time: question.result
         }
-
-    console.log timeline
-
 
 io.sockets.on 'connection', (socket) =>
     console.log 'hallo'
