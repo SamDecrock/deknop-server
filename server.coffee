@@ -121,6 +121,7 @@ onPoint = (point) ->
     if point.type is "score:update"
         for username, userdata of users
             point.score = userdata.score
+            point.correct = users[username].answered[point.id]
 
             for type, socket_id of userdata.clients
                 io.sockets.sockets[socket_id].emit "point", point
@@ -155,6 +156,7 @@ createTimeline = ->
         timeline.push {
             type: "question:soon"
             time: Math.max 0, question.start - 2
+            id: question.id
             countdown: 2
             buttons: []
         }
@@ -162,6 +164,7 @@ createTimeline = ->
         timeline.push {
             type: "question:start"
             time: question.start
+            id: question.id
             buttons: question.buttons
             countdown: question.end - question.start
         }
@@ -169,12 +172,14 @@ createTimeline = ->
         timeline.push {
             type: "question:end"
             time: question.end
+            id: question.id
             buttons: []
         }
 
         timeline.push {
             type: "score:update"
             time: question.result
+            id: question.id
         }
 
 io.sockets.on 'connection', (socket) =>
