@@ -46,6 +46,16 @@ var TV = (function(){
     baseUrl = url;
     socket = io.connect(baseUrl);
 
+    var registration_options = { 
+      username: 'one',
+      type: 'tv'
+    }
+
+    socket.on('connect', function (data) {
+      console.log('connect', data);
+      socket.emit('register', registration_options);
+    });
+
     socket.on('point', function(data){
       //console.log('Point received: ' + JSON.stringify(data));
 

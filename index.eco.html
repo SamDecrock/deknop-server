@@ -24,17 +24,7 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
-      var registration_options = { 
-        username: 'one',
-        type: 'tv'
-      }
-
-      var socket = io.connect('http://localhost:9000');
-
-      socket.on('connect', function (data) {
-        console.log('connect', data);
-        socket.emit('register', registration_options);
-      });
+      
     </script>
 
 </body>

@@ -81,11 +81,16 @@ onPoint = (point) ->
     point.passed = true
 
     if point.type is "score:update"
-        for userdata, username of users
+        for username, userdata of users
             point.score = userdata.score
+
+            console.log username, userdata
             
             for type, socket_id of userdata.clients
-                io.sockets[socket_id].emit point
+                console.log type, socket_id
+
+                console.log "send to", socket_id
+                io.sockets.sockets[socket_id].emit "point", point
     else
         io.sockets.emit "point", point
 
