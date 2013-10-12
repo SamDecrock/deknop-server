@@ -13,6 +13,8 @@ log4js.replaceConsole()
 
 socket = null
 timeline = null
+clockTimerID = null
+startTime = null
 
 server = express()
 http_server = http.createServer server
@@ -42,6 +44,34 @@ server.get '/demo', (req, res) ->
     template = fs.readFileSync path.join(__dirname + "/demo.eco.html"), "utf-8"
     context = {}
     res.send eco.render template, context
+
+
+server.post '/api/start', (req, res) ->
+    startTimeline()
+
+
+startTimeline = ->
+    clearInterval(clockTimerID)
+    clockTimerID = setInterval clockTick, 40 # 25 frames/s
+
+    startTime = +new Date()
+    clockTick()
+
+
+clockTick = ->
+    time = (new Date() - startTime) / 1000
+    #console.log "tick #{time}s"
+
+    # check queue points in timeline
+    for point in timeline
+        if not point.passed and point.time < time
+            onPoint(point)
+
+onPoint = (point) ->
+    point.passed = true
+    console.log "point " + point.time, point
+    io.sockets.emit "point", point
+
 
 
 createTimeline = ->
@@ -80,6 +110,7 @@ createTimeline = ->
     console.log timeline
 
 createTimeline()
+startTimeline()
 
 
 io.sockets.on 'connection', (socket) =>
