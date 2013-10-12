@@ -9,6 +9,8 @@ log4js.replaceConsole()
 
 socket = null
 timeline = null
+clockTimerID = null
+startTime = null
 
 io.enable 'browser client minification'         # send minified client
 io.enable 'browser client etag'                 # apply etag caching logic based on version number
@@ -31,6 +33,33 @@ server.get '/', (req, res) ->
     template = fs.readFileSync path.join(__dirname + "/index.eco.html"), "utf-8"
     context = {}
     res.send eco.render template, context
+
+
+server.post '/start', (req, res) ->
+    startTimeline()
+
+
+startTimeline = ->
+    clearInterval(clockTimerID)
+    clockTimerID = setInterval clockTick, 40 # 25 frames/s
+
+    startTime = +new Date()
+    clockTick()
+
+
+clockTick = ->
+    time = (new Date() - startTime) / 1000
+    #console.log "tick #{time}s"
+
+    # check queue points in timeline
+    for point in timeline
+        if not point.passed and point.time < time
+            onPoint(point)
+
+onPoint = (point) ->
+    point.passed = true
+    console.log "point " + point.time
+
 
 
 createTimeline = ->
@@ -69,6 +98,7 @@ createTimeline = ->
     console.log timeline
 
 createTimeline()
+startTimeline()
 
 console.log "http server running on port " + config.server_port
 console.log "sockets server running on port " + config.sockets_port
