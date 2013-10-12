@@ -71,10 +71,17 @@ clockTick = ->
             onPoint(point)
 
 onPoint = (point) ->
-    point.passed = true
-    console.log "point " + point.time, point
-    io.sockets.emit "point", point
+    switch point.type
+        when "quiz:end"
+            clearInterval(clockTimerID)
+            console.log "The end"
+        when "score:update"
+            point.score = 0
 
+    console.log "point " + point.time, point
+
+    point.passed = true
+    io.sockets.emit "point", point
 
 
 createTimeline = ->
@@ -83,32 +90,48 @@ createTimeline = ->
 
     console.log "createTimeline"
 
+    timeline.push {
+        type: "tv:start"
+        time: 0
+        buttons: []
+    }
+
+    timeline.push {
+        type: "quiz:start"
+        time: program_info.start
+        buttons: []
+    }
+
+    timeline.push {
+        type: "quiz:end"
+        time: program_info.end
+        buttons: []
+    }
+
     for question in program_info.questions
-        soon_point = {
+        timeline.push {
             type: "question:soon"
             time: Math.max 0, question.start - 2
             buttons: []
-            passed:false
         }
 
-        start_point = {
+        timeline.push {
             type: "question:start"
             time: question.start
             buttons: question.buttons
-            passed: false
             countdown: question.end - question.start
         }
 
-        end_point = {
+        timeline.push {
             type: "question:end"
             time: question.end
             buttons: []
-            passed:false
         }
 
-        timeline.push soon_point
-        timeline.push start_point
-        timeline.push end_point
+        timeline.push {
+            type: "score:update"
+            time: question.result
+        }
 
     console.log timeline
 
