@@ -82,6 +82,18 @@ createTimeline = ->
 createTimeline()
 
 
+io.sockets.on 'connection', (socket) =>
+    console.log 'hallo'
+
+###
+io.sockets.on('connection', function(socket) {
+
+    function log(eventStr) {
+        console.log("Event: " + eventStr + " from " + users[socket.id] + " (" + socket.id + ")")
+    }
+    log("connection");
+###
+
+
 console.log "http server running on port " + config.server_port
-console.log "sockets server running on port " + config.sockets_port
 http_server.listen config.server_port

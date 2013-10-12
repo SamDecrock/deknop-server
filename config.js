@@ -2,7 +2,6 @@
 
 exports.config = {
   server_port: 9000,
-  sockets_port: 9001,
   log_level: 3,
   transports: ['websocket', 'htmlfile', 'xhr-polling', 'jsonp-polling'],
   allowedDomains: "*"
