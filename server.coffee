@@ -83,7 +83,7 @@ server.post '/api/answer', (req, res) ->
     correct = question.right_answer is answer
     user.answered[id] = correct
 
-    console.log "#{username} answered #{answer} for question id:#{id}"
+    console.log "#{username} answered #{answer} for question id:#{id}, #{correct}"
 
     res.send {
         'status': 'answered'
