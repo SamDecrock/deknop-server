@@ -13,6 +13,7 @@ log4js = require('log4js')
 log4js.replaceConsole()
 
 program_info = JSON.parse fs.readFileSync path.join(__dirname + "/static/program_info.json"), "utf-8"
+#program_info = JSON.parse fs.readFileSync path.join(__dirname + "/static/program_info2.json"), "utf-8"
 timeline = null
 clockTimerID = null
 startTime = null
@@ -59,6 +60,7 @@ server.post '/api/answer', (req, res) ->
     username = req.body.username
     id = parseInt(req.body.id)
     answer = req.body.answer
+    console.log 'Answer ' + username + "," + id + "," + answer
 
     questions = program_info.questions
     question = _.find questions, (q) -> q.id is id
