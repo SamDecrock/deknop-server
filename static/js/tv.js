@@ -51,6 +51,7 @@ var TV = (function(){
     //
     try{
       var v = document.getElementById("video");
+      v.currentTime = 0;
       v.play();
       $("html, body").animate({ scrollTop: $('#video').height() }, 500);
     }catch(err){

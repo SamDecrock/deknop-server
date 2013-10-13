@@ -126,11 +126,11 @@ onPoint = (point) ->
             if point.correct then user.score += 1
             point.score = user.score
             
-            for type, socket_id of user.clients
-                io.sockets.sockets[socket_id].emit "point", point
-    else
-        io.sockets.emit "point", point
-
+            #for type, socket_id of user.clients
+                #io.sockets.sockets[socket_id].emit "point", point
+    #else
+    #    io.sockets.emit "point", point
+    io.sockets.emit "point", point
 
 
 
