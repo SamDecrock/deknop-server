@@ -134,6 +134,8 @@ var TV = (function(){
       questionResult = "incorrect";
     }
     
+    $('#quiz-score').removeClass("correct").removeClass("incorrect");
+    
     // Update score
     $('#score').html(data.score);
     
