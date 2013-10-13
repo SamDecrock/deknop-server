@@ -2,23 +2,31 @@
     "type": "quiz",
     "name": "This is a quiz",
     "start": 1.0,
-    "end": 17.0,
+    "end": 177,
     "questions": [
         {
             "id": 0,
-            "start": 3.5,
-            "end": 5.0,
-            "result": 12,
-            "buttons": ["A","B","C","D"],
-            "right_answer": "A"
+            "start": 20,
+            "end": 31,
+            "result": 122,
+            "buttons": ["A","B","C"],
+            "right_answer": "B"
         },
         {
             "id": 1,
-            "start": 8.0,
-            "end": 9.0,
-            "result": 15,
-            "buttons": ["A","B"],
-            "right_answer": "B"
+            "start": 58,
+            "end": 70,
+            "result": 145,
+            "buttons": ["A","B", "C"],
+            "right_answer": "A"
+        },
+        {
+            "id": 2,
+            "start": 99,
+            "end": 111,
+            "result": 170,
+            "buttons": ["A","B", "C"],
+            "right_answer": "C"
         }
     ]
 }

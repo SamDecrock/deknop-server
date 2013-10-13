@@ -1,6 +1,7 @@
 var TV = (function(){
   
-  var animationFrame;
+  var animationFrame,
+  timeout;
   
   // Create an Arc
   var archtype = Raphael("question-timer", 100, 100);
@@ -65,6 +66,7 @@ var TV = (function(){
   function onQuizEnd(data){
     console.log('Quiz end', data);
     //
+    $('#quiz-score').removeClass('show');
   }
 
   function onQuestionSoon(data){
@@ -76,17 +78,19 @@ var TV = (function(){
     console.log('Question start', data);
     //{"type":"question:start","time":6,"buttons":["A","B"],"passed":true,"countdown":2}
     
-    // Show Timer
-    $('.question-timer').addClass('show');
+    // Remove score
+    $('#quiz-score').removeClass('show');
     
-    var countdownMax = 10,
+    // Show Timer
+    $('#question-timer').addClass('show');
+    
+    var countdownMax = data.countdown,
       dateNow = +new Date(),
       futureDate = dateNow + (countdownMax * 1000);
       
     // Let the loop run
     (function animloop(){
-        var seconds = 10,
-        currentDate = +new Date,
+        var currentDate = +new Date,
         secondsRemain = Math.round((futureDate - currentDate) / 1000),
         percentage = Math.max(0, (secondsRemain / countdownMax) * 100);
         
@@ -101,9 +105,14 @@ var TV = (function(){
   function onQuestionEnd(data){
     console.log('Question end', data);
     //{"type":"question:end","time":8,"buttons":[],"passed":true}
-    $('.question-timer').removeClass('show');
+    
+    // remove timer
+    $('#question-timer').removeClass('show');
+    
+    // kill the loop
     cancelAnimationFrame(animationFrame);
     
+    //reset timer
     setTimeout(function(){
       my_arc = archtype.path().attr({
           "stroke": "#fff",
@@ -116,6 +125,31 @@ var TV = (function(){
   function onScoreUpdate(data){
     console.log('Score update', data);
     //
+    
+    var questionResult = false;
+    
+    if(data.correct){
+      questionResult = "correct";
+    }else{
+      questionResult = "incorrect";
+    }
+    
+    // Update score
+    $('#score').html(data.score);
+    
+    // Add class or incorrect correct
+    $('#question-'+questionResult).addClass('show');
+    
+    clearTimeout(timeout);
+    
+    timeout = setTimeout(function(){
+      $('#question-'+questionResult).removeClass('show');
+      $('#quiz-score').addClass('show').addClass(questionResult);
+    }, 3000);
+    
+    timeout = setTimeout(function(){
+      $('#quiz-score').removeClass('show');
+    }, 9000);
   }
 
 

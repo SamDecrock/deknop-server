@@ -51,6 +51,11 @@ server.get '/demo', (req, res) ->
 
 server.post '/api/start', (req, res) ->
     console.log 'Starting the TV show'
+    for username, user of users
+        user.score = 0
+        user.answered = {}
+    console.log "reset scores", users
+    
     createTimeline()
     startTimeline()
     res.send {'status': 'started'}
@@ -116,7 +121,7 @@ onPoint = (point) ->
         for username, user of users
             user = users[username]
 
-            point.correct = user.answered[point.id]
+            point.correct = user.answered[point.id] ? false
 
             if point.correct then user.score += 1
             point.score = user.score

@@ -29,19 +29,23 @@
     
     <div class="television">
         <div class="screen">
-            <div class="question-correct"></div>
-            <div class="question-incorrect"></div>
+            <div id="question-correct" class="question-correct"></div>
+            <div id="question-incorrect" class="question-incorrect"></div>
             <div id="question-timer" class="question-timer"></div>
+            <div id="quiz-score" class="quiz-score">
+                <span class="label">Score</label>
+                <span id="score" class="score">0</span>
+            </div>
             
             <video id="video" controls tabindex="0">
-                <source src="/static/video/video.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+                <source src="/static/video/video.m4v" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
             </video>
         </div>
     </div>
 
 	<script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/jquery.form.js"></script>
-	<script src="/static/js/raphael-min.js"></script>
+    <script src="/static/js/raphael-min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/static/js/tv.js"></script>
     <script>
