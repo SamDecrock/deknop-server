@@ -1,5 +1,8 @@
 var TV = (function(){
   
+  var animationFrame;
+  
+  // Create an Arc
   var archtype = Raphael("question-timer", 100, 100);
   
   archtype.customAttributes.arc = function (xloc, yloc, value, total, R) {
@@ -24,19 +27,31 @@ var TV = (function(){
       };
   };
   
-  //make an arc at 50,50 with a radius of 30 that grows from 0 to 40 of 100 with a bounce
+  // Setup request aninmations frame
+  window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            function( callback ){
+              window.setTimeout(callback, 1000 / 60);
+            };
+  })();
+  
+  // Make an arc
   var my_arc = archtype.path().attr({
       "stroke": "#fff",
       "stroke-width": 14,
       arc: [50, 50, 100, 100, 30]
   });
-
+  
+  // Start of all events
   function onTvStart(data){
     console.log('Tv start', data);
     //
     try{
       var v = document.getElementById("video");
       v.play();
+      $("html, body").animate({ scrollTop: $('#video').height() }, 500);
     }catch(err){
       console.log("Damned: " + err);
     }
@@ -61,21 +76,14 @@ var TV = (function(){
     console.log('Question start', data);
     //{"type":"question:start","time":6,"buttons":["A","B"],"passed":true,"countdown":2}
     
+    // Show Timer
     $('.question-timer').addClass('show');
     
     var countdownMax = 10,
       dateNow = +new Date(),
       futureDate = dateNow + (countdownMax * 1000);
       
-    window.requestAnimFrame = (function(){
-      return  window.requestAnimationFrame       ||
-              window.webkitRequestAnimationFrame ||
-              window.mozRequestAnimationFrame    ||
-              function( callback ){
-                window.setTimeout(callback, 1000 / 60);
-              };
-    })();
-      
+    // Let the loop run
     (function animloop(){
         var seconds = 10,
         currentDate = +new Date,
@@ -86,7 +94,7 @@ var TV = (function(){
             arc: [50, 50, percentage, 100, 30]
         }, 100, "bounce");
         
-        requestAnimFrame(animloop);
+        animationFrame = requestAnimFrame(animloop);
     })();
   }
 
@@ -94,6 +102,15 @@ var TV = (function(){
     console.log('Question end', data);
     //{"type":"question:end","time":8,"buttons":[],"passed":true}
     $('.question-timer').removeClass('show');
+    cancelAnimationFrame(animationFrame);
+    
+    setTimeout(function(){
+      my_arc = archtype.path().attr({
+          "stroke": "#fff",
+          "stroke-width": 14,
+          arc: [50, 50, 100, 100, 30]
+      });
+    }, 500);
   }
 
   function onScoreUpdate(data){
