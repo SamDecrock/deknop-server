@@ -66,6 +66,7 @@ var TV = (function(){
   function onQuizEnd(data){
     console.log('Quiz end', data);
     //
+    $('#quiz-score').removeClass('show');
   }
 
   function onQuestionSoon(data){
@@ -89,8 +90,7 @@ var TV = (function(){
       
     // Let the loop run
     (function animloop(){
-        var seconds = 10,
-        currentDate = +new Date,
+        var currentDate = +new Date,
         secondsRemain = Math.round((futureDate - currentDate) / 1000),
         percentage = Math.max(0, (secondsRemain / countdownMax) * 100);
         
