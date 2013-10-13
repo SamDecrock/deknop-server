@@ -2,21 +2,21 @@
     "type": "quiz",
     "name": "This is a quiz",
     "start": 1.0,
-    "end": 17.0,
+    "end": 50.0,
     "questions": [
         {
             "id": 0,
             "start": 3.5,
-            "end": 5.0,
-            "result": 12,
+            "end": 13.5,
+            "result": 15,
             "buttons": ["A","B","C","D"],
             "right_answer": "A"
         },
         {
             "id": 1,
-            "start": 8.0,
-            "end": 9.0,
-            "result": 15,
+            "start": 30.0,
+            "end": 35.0,
+            "result": 36.5,
             "buttons": ["A","B"],
             "right_answer": "B"
         }
