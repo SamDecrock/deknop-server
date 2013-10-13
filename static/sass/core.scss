@@ -24,8 +24,31 @@ header.main{
 	width: 960px;
 	padding: 40px;
 	margin:0 auto 60px auto;
-	border: 2px solid #0d2f4a;
+	border: 5px solid #0d2f4a;
 	@include border-radius(20px);
+	position: relative;
+	
+	&:before{
+		content:"Samson";
+		color: #0d2f4a;
+		position: absolute;
+		width: 200px;
+		text-align: center;
+		left: 50%;
+		margin-left: -100px;
+		bottom: 13px;
+	}
+	
+	&:after{
+		content: "";
+		width: 280px;
+		height: 49px;
+		position: absolute;
+		left: 50%;
+		margin-left: -140px;
+		bottom: -54px;
+		background: url(../img/footer.png) no-repeat;
+	}
 	
 	.screen{
 		width: 100%;
@@ -33,7 +56,8 @@ header.main{
 		
 		.question-correct,
 		.question-incorrect,
-		.question-timer{
+		.question-timer,
+		.quiz-score{
 			width: 100px;
 			height: 100px;
 			@include border-radius(50%);
@@ -51,15 +75,53 @@ header.main{
 		.question-correct{
 			background: #9fd647 url(../img/correct.png) center center no-repeat;
 			background-size: 50px;
+			
+			&.show{
+				opacity: 100;
+			}
 		}
 		
 		.question-incorrect{
 			background: #f85f6a url(../img/incorrect.png) center center no-repeat;
 			background-size: 50px;
+			
+			&.show{
+				opacity: 100;
+			}
 		}
 		
 		.question-timer{
 			background: #67a7d3;
+			
+			&.show{
+				opacity: 100;
+			}
+		}
+		
+		.quiz-score{
+			background: #fff;
+			color: #fff;
+						
+			.label{
+				display: block;
+				text-align: center;
+				padding-top: 18px;
+			}
+			
+			.score{
+				display: block;
+				font-size: 40px;
+			}
+			
+			&.correct{
+				color: #fff;
+				background: #9fd647;
+			}
+			
+			&.incorrect{
+				color: #fff;
+				background: #f85f6a;
+			}
 			
 			&.show{
 				opacity: 100;
@@ -86,7 +148,7 @@ header.main{
 		display: inline-block;
 		text-decoration: none;
 		color: #0d2f4a;
-		@include transition(transform 0.2s);
+		@include transition(transform 0.5s);
 		
 		&:hover{
 			background: #0d2f4a;
