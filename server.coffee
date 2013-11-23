@@ -13,6 +13,7 @@ log4js = require('log4js')
 log4js.replaceConsole()
 
 program_info = JSON.parse fs.readFileSync path.join(__dirname + "/static/program_info.json"), "utf-8"
+#program_info = JSON.parse fs.readFileSync path.join(__dirname + "/static/program_info2.json"), "utf-8"
 timeline = null
 clockTimerID = null
 startTime = null
@@ -64,6 +65,7 @@ server.post '/api/answer', (req, res) ->
     username = req.body.username
     id = parseInt(req.body.id)
     answer = req.body.answer
+    console.log 'Answer ' + username + "," + id + "," + answer
 
     questions = program_info.questions
     question = _.find questions, (q) -> q.id is id
@@ -81,7 +83,7 @@ server.post '/api/answer', (req, res) ->
     correct = question.right_answer is answer
     user.answered[id] = correct
 
-    console.log "#{username} answered #{answer} for question id:#{id}"
+    console.log "#{username} answered #{answer} for question id:#{id}, #{correct}"
 
     res.send {
         'status': 'answered'
@@ -124,11 +126,11 @@ onPoint = (point) ->
             if point.correct then user.score += 1
             point.score = user.score
             
-            for type, socket_id of user.clients
-                io.sockets.sockets[socket_id].emit "point", point
-    else
-        io.sockets.emit "point", point
-
+            #for type, socket_id of user.clients
+                #io.sockets.sockets[socket_id].emit "point", point
+    #else
+    #    io.sockets.emit "point", point
+    io.sockets.emit "point", point
 
 
 

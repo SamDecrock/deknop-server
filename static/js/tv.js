@@ -51,6 +51,7 @@ var TV = (function(){
     //
     try{
       var v = document.getElementById("video");
+      v.currentTime = 0;
       v.play();
       $("html, body").animate({ scrollTop: $('#video').height() }, 500);
     }catch(err){
@@ -133,6 +134,8 @@ var TV = (function(){
     }else{
       questionResult = "incorrect";
     }
+    
+    $('#quiz-score').removeClass("correct").removeClass("incorrect");
     
     // Update score
     $('#score').html(data.score);

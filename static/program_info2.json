@@ -1,0 +1,24 @@
+{
+    "type": "quiz",
+    "name": "This is a quiz",
+    "start": 1.0,
+    "end": 37.0,
+    "questions": [
+        {
+            "id": 0,
+            "start": 3.5,
+            "end": 10.0,
+            "result": 12,
+            "buttons": ["A","B","C"],
+            "right_answer": "A"
+        },
+        {
+            "id": 1,
+            "start": 15.0,
+            "end": 20.0,
+            "result": 15,
+            "buttons": ["A","B"],
+            "right_answer": "B"
+        }
+    ]
+}
