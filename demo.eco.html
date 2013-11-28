@@ -4,7 +4,7 @@
     <!-- Meta stuff -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
-    
+
     <meta http-equiv="Content-Language" content="en" />
     <meta name="description" content="De Knop" />
     <meta name="robots" content="index, follow" />
@@ -12,7 +12,7 @@
     <!-- Title -->
     <title>De Knop - Demo</title>
 
-    <!-- CSS Styles -->   
+    <!-- CSS Styles -->
     <link rel="stylesheet" href="/static/css/core.css" media="screen" />
     <style>
         .clearfix:after {
@@ -23,15 +23,15 @@
             line-height: 0;
             height: 0;
         }
-         
+
         .clearfix {
             display: inline-block;
         }
-         
+
         html[xmlns] .clearfix {
             display: block;
         }
-         
+
         * html .clearfix {
             height: 1%;
         }
@@ -43,13 +43,13 @@
     <ul class="clearfix">
         <li><a href="/api/start" id="start">Start video</a></li>
     </ul>
-    
+
     <video src="/static/video/1210100612525569021.mp4" id="video" controls>
     Your browser does not support the video tag.
     </video>
-    
+
     <div id="question-timer" style="display:none"></div>
-    
+
     <form action="/api/answer" method="POST">
         <h3>Question 1</h3>
         <input type="hidden" name="id" value="0">
@@ -100,7 +100,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/static/js/tv.js"></script>
     <script>
-        TV.init('http://192.168.1.83:9000');
+        TV.init(document.location);
         $('#start').click(TV.start);
     </script>
 </body>

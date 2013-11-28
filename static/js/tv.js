@@ -1,11 +1,11 @@
 var TV = (function(){
-  
+
   var animationFrame,
   timeout;
-  
+
   // Create an Arc
   var archtype = Raphael("question-timer", 100, 100);
-  
+
   archtype.customAttributes.arc = function (xloc, yloc, value, total, R) {
       var alpha = 360 / total * value,
           a = (90 - alpha) * Math.PI / 180,
@@ -27,7 +27,7 @@ var TV = (function(){
           path: path
       };
   };
-  
+
   // Setup request aninmations frame
   window.requestAnimFrame = (function(){
     return  window.requestAnimationFrame       ||
@@ -37,14 +37,14 @@ var TV = (function(){
               window.setTimeout(callback, 1000 / 60);
             };
   })();
-  
+
   // Make an arc
   var my_arc = archtype.path().attr({
       "stroke": "#fff",
       "stroke-width": 14,
       arc: [50, 50, 100, 100, 30]
   });
-  
+
   // Start of all events
   function onTvStart(data){
     console.log('Tv start', data);
@@ -78,27 +78,27 @@ var TV = (function(){
   function onQuestionStart(data){
     console.log('Question start', data);
     //{"type":"question:start","time":6,"buttons":["A","B"],"passed":true,"countdown":2}
-    
+
     // Remove score
     $('#quiz-score').removeClass('show');
-    
+
     // Show Timer
     $('#question-timer').addClass('show');
-    
+
     var countdownMax = data.countdown,
       dateNow = +new Date(),
       futureDate = dateNow + (countdownMax * 1000);
-      
+
     // Let the loop run
     (function animloop(){
         var currentDate = +new Date,
         secondsRemain = Math.round((futureDate - currentDate) / 1000),
         percentage = Math.max(0, (secondsRemain / countdownMax) * 100);
-        
+
         my_arc.animate({
             arc: [50, 50, percentage, 100, 30]
         }, 100, "bounce");
-        
+
         animationFrame = requestAnimFrame(animloop);
     })();
   }
@@ -106,13 +106,13 @@ var TV = (function(){
   function onQuestionEnd(data){
     console.log('Question end', data);
     //{"type":"question:end","time":8,"buttons":[],"passed":true}
-    
+
     // remove timer
     $('#question-timer').removeClass('show');
-    
+
     // kill the loop
     cancelAnimationFrame(animationFrame);
-    
+
     //reset timer
     setTimeout(function(){
       my_arc = archtype.path().attr({
@@ -126,30 +126,30 @@ var TV = (function(){
   function onScoreUpdate(data){
     console.log('Score update', data);
     //
-    
+
     var questionResult = false;
-    
+
     if(data.correct){
       questionResult = "correct";
     }else{
       questionResult = "incorrect";
     }
-    
+
     $('#quiz-score').removeClass("correct").removeClass("incorrect");
-    
+
     // Update score
     $('#score').html(data.score);
-    
+
     // Add class or incorrect correct
     $('#question-'+questionResult).addClass('show');
-    
+
     clearTimeout(timeout);
-    
+
     timeout = setTimeout(function(){
       $('#question-'+questionResult).removeClass('show');
       $('#quiz-score').addClass('show').addClass(questionResult);
     }, 3000);
-    
+
     timeout = setTimeout(function(){
       $('#quiz-score').removeClass('show');
     }, 9000);
@@ -165,7 +165,7 @@ var TV = (function(){
     baseUrl = url;
     socket = io.connect(baseUrl);
 
-    var registration_options = { 
+    var registration_options = {
       username: 'one',
       type: 'tv'
     }
@@ -194,7 +194,7 @@ var TV = (function(){
 
   function start(event){
     event.preventDefault();
-    $.post(baseUrl + '/api/start', function(data){
+    $.post('/api/start', function(data){
       console.log('Started ' + JSON.stringify(data));
     });
   }
