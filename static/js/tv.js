@@ -3,6 +3,8 @@ var TV = (function(){
   var animationFrame,
   timeout;
 
+  var current_question_id = null;
+
   // Create an Arc
   var archtype = Raphael("question-timer", 100, 100);
 
@@ -48,6 +50,7 @@ var TV = (function(){
   // Start of all events
   function onTvStart(data){
     console.log('Tv start', data);
+    current_question_id = null;
     //
     try{
       var v = document.getElementById("video");
@@ -72,11 +75,13 @@ var TV = (function(){
 
   function onQuestionSoon(data){
     console.log('Question soon', data);
+    current_question_id = data.id;
     //{"type":"question:soon","time":4,"buttons":[],"passed":true}
   }
 
   function onQuestionStart(data){
     console.log('Question start', data);
+    current_question_id = data.id;
     //{"type":"question:start","time":6,"buttons":["A","B"],"passed":true,"countdown":2}
 
     // Remove score
@@ -190,6 +195,27 @@ var TV = (function(){
     });
 
     $('form').ajaxForm();
+
+    // makey makey
+    document.onkeydown = function(event) {
+      switch (event.keyCode) {
+        case 37: // left
+          console.log('left');
+          $.post('/api/answer', {answer: 'A', username: registration_options.username, id: current_question_id});
+          break;
+        case 38: // up
+          console.log('up');
+          break;
+        case 39: // right
+          console.log('right');
+          $.post('/api/answer', {answer: 'C', username: registration_options.username, id: current_question_id});
+          break;
+        case 40: // down
+          console.log('down');
+          $.post('/api/answer', {answer: 'B', username: registration_options.username, id: current_question_id});
+          break;
+     }
+    };
   }
 
   function start(event){
@@ -198,6 +224,9 @@ var TV = (function(){
       console.log('Started ' + JSON.stringify(data));
     });
   }
+
+
+
 
   return {
     init: init,

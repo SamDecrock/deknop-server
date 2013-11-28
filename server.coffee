@@ -11,6 +11,7 @@ eco = require 'eco'
 _ = require 'underscore'
 log4js = require('log4js')
 log4js.replaceConsole()
+lights = require('./lights')
 
 program_info = JSON.parse fs.readFileSync path.join(__dirname + "/static/program_info.json"), "utf-8"
 #program_info = JSON.parse fs.readFileSync path.join(__dirname + "/static/program_info2.json"), "utf-8"
@@ -55,7 +56,7 @@ server.post '/api/start', (req, res) ->
         user.score = 0
         user.answered = {}
     console.log "reset scores", users
-    
+
     createTimeline()
     startTimeline()
     res.send {'status': 'started'}
@@ -77,7 +78,7 @@ server.post '/api/answer', (req, res) ->
     unless question
         return res.send {'error': 'cannot find question #{id}'}
 
-    unless _.isUndefined user.answered[id] 
+    unless _.isUndefined user.answered[id]
         return res.send {'error': '#{username} already answered question #{id}'}
 
     correct = question.right_answer is answer
@@ -88,7 +89,9 @@ server.post '/api/answer', (req, res) ->
     res.send {
         'status': 'answered'
     }
-    
+
+    lights.answer(answer)
+
 
 
 startTimeline = ->
@@ -125,12 +128,13 @@ onPoint = (point) ->
 
             if point.correct then user.score += 1
             point.score = user.score
-            
+
             #for type, socket_id of user.clients
                 #io.sockets.sockets[socket_id].emit "point", point
     #else
     #    io.sockets.emit "point", point
     io.sockets.emit "point", point
+    lights.pointEvent(point)
 
 
 
@@ -188,7 +192,7 @@ createTimeline = ->
 io.sockets.on 'connection', (socket) =>
     socket.on 'register', (data) =>
         console.log 'register', data
-        
+
         if not users[data.username]
             users[data.username] = {
                 clients:{}
@@ -197,7 +201,7 @@ io.sockets.on 'connection', (socket) =>
             }
 
         users[data.username].clients[data.type] = socket.id
-        
+
         console.log "users: %j", users
 
 

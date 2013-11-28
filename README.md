@@ -1,5 +1,9 @@
-De Knop
+De Knop (With fruit!)
 ======
+This version of 'De Knop' uses a Makey Makey instead of the Raspberry Pi buttons so one can use fruit instead of buttons :-)
+
+Original text
+============
 'De Knop' is a project made in one weekend for the [VRT Make-A-Thon](http://innovation.vrt.be/agenda/make-thon).
 
 The goal for our installation was to bring a television show into your home. 
