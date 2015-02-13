@@ -201,18 +201,27 @@ var TV = (function(){
       switch (event.keyCode) {
         case 37: // left
           console.log('left');
+          event.preventDefault();
           $.post('/api/answer', {answer: 'A', username: registration_options.username, id: current_question_id});
           break;
         case 38: // up
           console.log('up');
+          event.preventDefault();
           break;
         case 39: // right
           console.log('right');
+          event.preventDefault();
           $.post('/api/answer', {answer: 'C', username: registration_options.username, id: current_question_id});
           break;
         case 40: // down
           console.log('down');
+          event.preventDefault();
           $.post('/api/answer', {answer: 'B', username: registration_options.username, id: current_question_id});
+          break;
+        case 32: // spacebar
+          console.log('spacebar');
+          event.preventDefault();
+          start(event);
           break;
      }
     };

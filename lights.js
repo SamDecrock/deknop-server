@@ -49,14 +49,14 @@ var lamps = (function(){
     }
 
     function on_all(){
-        // Purple
-        lamp({id: 1, on: true, hue: 50000, bri: 200, sat: sat_max});
+        // Groene appel
+        lamp({id: 1, on: true, hue: 25525, bri: 67, sat: sat_max});
 
-        // Blue
-        lamp({id: 2, on: true, hue: 47000, bri: 200, sat: sat_max});
+        // Gele appel
+        lamp({id: 2, on: true, hue: 12778, bri: 66, sat: sat_max});
 
-        // orange
-        lamp({id: 3, on: true, hue: 10000, bri: 200, sat: sat_max});
+        // Rode appel
+        lamp({id: 3, on: true, hue: 246, bri: 146, sat: sat_max});
         //lamp({id: 3, on: true, hue: 46920, bri: 100, sat: sat_max})
     }
 
